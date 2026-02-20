@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Key Distribution: The Future of Security</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #020617; /* slate-950 */
+            --card-bg-color: rgba(15, 23, 42, 0.6); /* slate-900/60 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glow-color-cyan: #06b6d4;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at center, #082f49 0%, #020617 70%);
+            color: #cbd5e1; /* slate-300 */
+            overflow-x: hidden;
+        }
+
+        #neural-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #globe-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.5;
+            cursor: grab;
+        }
+        #globe-canvas:active { cursor: grabbing; }
+
+        .glass-card {
+            background: var(--card-bg-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card.is-visible {
+             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 15px -8px var(--glow-color-cyan);
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45), 0 0 20px -5px var(--glow-color-cyan);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: -webkit-linear-gradient(45deg, #22d3ee, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stagger-1 { transition-delay: 0.2s; }
+        .stagger-2 { transition-delay: 0.4s; }
+        .stagger-3 { transition-delay: 0.6s; }
+
+        /* Interactive Scrollytelling Section */
+        #interactive-diagram {
+            position: sticky;
+            top: 20vh;
+            height: 60vh;
+        }
+        .step { min-height: 85vh; }
+        .photon-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--glow-color-cyan);
+            box-shadow: 0 0 12px 4px var(--glow-color-cyan);
+            transition: all 1s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .photon-state {
+            width: 80%;
+            height: 2px;
+            background: white;
+            transition: transform 0.5s ease;
+        }
+        #final-key-lock {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.5s;
+            opacity: 0;
+        }
+        #lock-body { transition: transform 0.3s ease-out; }
+        #lock-shackle { transition: transform 0.3s ease-out; transform-origin: 25% 25%; }
+        #final-key-lock.locked #lock-shackle { transform: translateY(-8px); }
+        
+        #public-channel-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--glow-color-cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            mask-image: linear-gradient(90deg, transparent, #fff 10%, #fff 90%, transparent);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <canvas id="neural-canvas"></canvas>
+    
+    <div class="relative h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <canvas id="globe-canvas"></canvas>
+        <div class="relative z-10">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500 mb-4">
+                The Future of Unbreakable Communication
+            </h1>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-slate-400 mb-8">
+                An interactive journey into Quantum Key Distribution — security guaranteed by the laws of physics.
+            </p>
+            <a href="#problem" id="begin-journey-btn" class="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 shadow-lg shadow-cyan-500/30">
+                Begin the Journey
+            </a>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-16 md:py-24 space-y-32">
+
+        <!-- Section 1: The Problem -->
+        <section id="problem" class="text-center">
+            <h2 class="section-title mb-4 fade-in-up">Chapter 1: The Digital Heist</h2>
+            <p class="text-lg text-slate-400 max-w-3xl mx-auto fade-in-up stagger-1">
+                Our digital world is built on locks made of math. While strong today, they face a future threat: quantum computers. These powerful machines could one day shatter our current encryption, exposing everything.
+            </p>
+            <div class="mt-12 fade-in-up stagger-2">
+                <div class="glass-card p-8 inline-flex items-center justify-center space-x-8">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-red-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        <p class="mt-2 font-semibold">Classical Encryption</p>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-cyan-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.293 2.293a1 1 0 01-1.414 1.414L10 5.414m-4.293 2.293a1 1 0 010 1.414L5 10.414m2.293-4.293a1 1 0 011.414 0L10 8.586m-1.414 2.828a1 1 0 010-1.414L10 8.586M19 12a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <p class="mt-2 font-semibold">Quantum Computer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Solution -->
+        <section id="solution" class="text-center">
+            <h2 class="section-title mb-4 fade-in-up">Chapter 2: A Law of Nature as a Shield</h2>
+            <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-12 fade-in-up stagger-1">
+                Instead of breakable math, QKD uses a fundamental law of the universe: the Observer Effect. You cannot measure a quantum particle without changing it. This isn't a technological challenge; it's the very nature of reality.
+            </p>
+            <div class="glass-card p-8 md:p-12 fade-in-up stagger-2">
+                <h3 class="text-2xl font-bold text-cyan-300 mb-4">Security, Guaranteed by Physics</h3>
+                <p class="text-lg text-slate-300">
+                   If an eavesdropper (Hacker) tries to intercept the quantum key, their act of measurement leaves behind undeniable evidence—like a burglar who must break a window to get in. The Doctor and Patient will see the disturbance and know the key is compromised.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 3: Interactive How It Works -->
+        <section id="how-it-works">
+            <div class="relative">
+                <div id="interactive-diagram" class="w-full">
+                    <!-- JS will populate this -->
+                </div>
+                <div class="relative z-10 w-full md:w-2/5 lg:w-1/3">
+                    <div class="step p-4" data-step="1">
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">1. The Quantum Channel</h3>
+                            <p class="text-slate-400">The Doctor sends photons with random quantum states (polarizations).</p>
+                        </div>
+                    </div>
+                    <div class="step p-4" data-step="2">
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">2. The Interception</h3>
+                            <p class="text-slate-400">A Hacker's measurement collapses the photon's state, irreversibly altering it.</p>
+                        </div>
+                    </div>
+                    <div class="step p-4" data-step="3">
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">3. The Public Channel</h3>
+                            <p class="text-slate-400">They compare settings. Mismatched or disturbed measurements are discarded.</p>
+                        </div>
+                    </div>
+                    <div class="step p-4" data-step="4">
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">4. The Secure Key</h3>
+                            <p class="text-slate-400">The remaining photons form a perfectly secret key, which is then used to secure data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Real-World Applications -->
+        <section id="applications" class="text-center">
+            <h2 class="section-title mb-12 fade-in-up">Chapter 3: The Quantum Revolution in Practice</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 fade-in-up stagger-1">
+                    <a href="./aboutfinance.html" style="text-decoration: none; color: inherit;">
+                        <div class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v.01M12 18v-2m0-2v.01M12 18v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                        <h3 class="text-xl font-bold text-white mb-2">Secure Finance</h3>
+                        <p class="text-slate-400">Protecting global financial transactions and sensitive banking data from future cyber threats.</p>
+                    </a>
+                </div>
+                <div class="glass-card p-8 fade-in-up stagger-2">
+                    <a href="./aboutgov.html" style="text-decoration: none; color: inherit;">
+                        <div class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg></div>
+                        <h3 class="text-xl font-bold text-white mb-2">Government & Defense</h3>
+                        <p class="text-slate-400">Ensuring that classified communications and national security secrets remain confidential.</p>
+                    </a>
+                </div>
+                <div class="glass-card p-8 fade-in-up stagger-3">
+                    <a href="./abouthealth.html" style="text-decoration: none; color: inherit;">
+                        <div class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-5.998 12.078 12.078 0 01.665-6.479L12 14z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-5.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg></div>
+                        <h3 class="text-xl font-bold text-white mb-2">Healthcare Privacy</h3>
+                        <p class="text-slate-400">Securing patient records and sensitive genetic data, guaranteeing privacy for generations.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Call to Action -->
+        <section id="cta" class="text-center">
+             <h2 class="section-title mb-12 fade-in-up">Witness the Future in Action</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 fade-in-up stagger-1">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 text-left flex flex-col">
+                    <h3 class="text-2xl font-bold text-white mb-2">3D Cinematic Simulation</h3>
+                    <p class="text-slate-400 mb-6 flex-grow">A visually stunning, movie-like demonstration of the quantum world and QKD's core principles.</p>
+                    <a href="./home.html" class="self-start mt-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                        Watch the Cinematic
+                    </a>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-8 text-left flex flex-col">
+                    <h3 class="text-2xl font-bold text-white mb-2">3D Transmission Simulation</h3>
+                    <p class="text-slate-400 mb-6 flex-grow">Take control in our interactive simulation. Play as the Doctor, Patient, or Hacker and experience the protocol firsthand.</p>
+                    <a href="./index.html" class="self-start mt-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-2 px-6 rounded-full transition-transform transform hover:scale-105">
+                        Launch Simulation
+                    </a>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-8 text-left flex flex-col">
+                    <h3 class="text-2xl font-bold text-white mb-2">Qiskit IBM Code</h3>
+                    <p class="text-slate-400 mb-6 flex-grow">Dive into the code behind quantum protocols. Explore how to implement a simplified QKD circuit using IBM's Qiskit.</p>
+                     <a href="#" class="self-start mt-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                        View the Code
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="text-center p-8 text-slate-500">
+        <p>An interactive exploration of Quantum Key Distribution.</p>
+    </footer>
+
+    <script>
+        // --- Tone.js Sound ---
+        const synth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "fmsine" },
+            envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.5 },
+        }).toDestination();
+
+        // Initialize audio on the first user interaction
+        document.getElementById('begin-journey-btn').addEventListener('click', () => {
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+        }, { once: true });
+
+        function playSound(note) {
+            if (Tone.context.state === 'running') {
+                synth.triggerAttackRelease(note, "8n");
+            }
+        }
+
+        // --- Three.js Interactive Globe ---
+        const globeCanvas = document.getElementById('globe-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: globeCanvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const globeGroup = new THREE.Group();
+        scene.add(globeGroup);
+
+        const geometry = new THREE.SphereGeometry(1.5, 32, 32);
+        const material = new THREE.MeshPhongMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.1 });
+        const sphere = new THREE.Mesh(geometry, material);
+        globeGroup.add(sphere);
+
+        const wireframe = new THREE.LineSegments(
+            new THREE.EdgesGeometry(geometry),
+            new THREE.LineBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.2 })
+        );
+        globeGroup.add(wireframe);
+
+        // Arcs
+        function createArc() {
+            const start = new THREE.Vector3().setFromSphericalCoords(1.51, Math.PI / 2 * (Math.random() - 0.5), Math.PI * (Math.random() - 0.5));
+            const end = new THREE.Vector3().setFromSphericalCoords(1.51, Math.PI / 2 * (Math.random() - 0.5), Math.PI * (Math.random() - 0.5));
+            
+            const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5).normalize().multiplyScalar(1.5 + Math.random() * 0.3);
+
+            const arc = new THREE.CatmullRomCurve3([start, mid, end]);
+            const points = arc.getPoints(50);
+            const arcGeometry = new THREE.BufferGeometry().setFromPoints(points);
+            const arcMaterial = new THREE.LineBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.7, linewidth: 2 });
+            const arcLine = new THREE.Line(arcGeometry, arcMaterial);
+            globeGroup.add(arcLine);
+
+            setTimeout(() => {
+                globeGroup.remove(arcLine);
+                arcLine.geometry.dispose();
+                arcLine.material.dispose();
+            }, 1500 + Math.random() * 1500);
+        }
+        setInterval(createArc, 500);
+
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x06b6d4, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        camera.position.z = 4;
+
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        
+        globeCanvas.addEventListener('mousedown', e => { isDragging = true; });
+        globeCanvas.addEventListener('mouseup', e => { isDragging = false; });
+        globeCanvas.addEventListener('mousemove', e => {
+            const deltaMove = { x: e.offsetX - previousMousePosition.x, y: e.offsetY - previousMousePosition.y };
+            if (isDragging) {
+                const deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(
+                    new THREE.Euler((deltaMove.y * Math.PI) / 180, (deltaMove.x * Math.PI) / 180, 0, 'XYZ')
+                );
+                globeGroup.quaternion.multiplyQuaternions(deltaRotationQuaternion, globeGroup.quaternion);
+            }
+            previousMousePosition = { x: e.offsetX, y: e.offsetY };
+        });
+
+        function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            if (!isDragging) globeGroup.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animateGlobe();
+
+
+        // --- Aurora Background ---
+        const auroraCanvas = document.getElementById('neural-canvas'); // Changed ID
+        const auroraCtx = auroraCanvas.getContext('2d');
+        let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+        let particles = [];
+
+        function initAurora() {
+            auroraCanvas.width = window.innerWidth;
+            auroraCanvas.height = window.innerHeight;
+            particles = [];
+            let numParticles = (window.innerWidth * window.innerHeight) / 25000;
+            for(let i=0; i<numParticles; i++) {
+                particles.push({
+                    x: Math.random() * auroraCanvas.width,
+                    y: Math.random() * auroraCanvas.height,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    radius: Math.random() * 3 + 1,
+                    color: `rgba(6, 182, 212, ${Math.random() * 0.5 + 0.2})`
+                });
+            }
+        }
+
+        function animateAurora() {
+            auroraCtx.clearRect(0, 0, auroraCanvas.width, auroraCanvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if(p.x < 0 || p.x > auroraCanvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > auroraCanvas.height) p.vy *= -1;
+
+                auroraCtx.beginPath();
+                auroraCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                auroraCtx.fillStyle = p.color;
+                auroraCtx.fill();
+
+                particles.forEach(p2 => {
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 150) {
+                        auroraCtx.beginPath();
+                        auroraCtx.moveTo(p.x, p.y);
+                        auroraCtx.lineTo(p2.x, p2.y);
+                        auroraCtx.strokeStyle = `rgba(6, 182, 212, ${1 - dist/150})`;
+                        auroraCtx.lineWidth = 0.5;
+                        auroraCtx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(animateAurora);
+        }
+
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        
+        initAurora();
+        animateAurora();
+
+
+        // --- Intersection Observer for fade-in animations ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        // --- Interactive Scrollytelling Logic ---
+        const diagram = document.getElementById('interactive-diagram');
+        const steps = document.querySelectorAll('.step');
+        const numPhotons = 12;
+        let photons = [];
+
+        function initInteractiveDiagram() {
+            diagram.innerHTML = `
+                <div id="diag-doctor" class="absolute left-0 top-1/2 -translate-y-1/2 text-center"></div>
+                <div id="diag-patient" class="absolute right-0 top-1/2 -translate-y-1/2 text-center"></div>
+                <div id="diag-hacker" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center opacity-0 transition-opacity duration-500"></div>
+                <div id="public-channel-line"></div>
+                <div id="final-key-lock" class="text-green-400 opacity-0"></div>
+            `;
+            document.getElementById('diag-doctor').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg><p class="font-bold">Doctor</p>`;
+            document.getElementById('diag-patient').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><p class="font-bold">Patient</p>`;
+            document.getElementById('diag-hacker').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg><p class="font-bold">Hacker</p>`;
+            document.getElementById('final-key-lock').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-28 w-28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><g id="lock-body"><rect x="5" y="11" width="14" height="10" rx="2" ry="2"></rect><path d="M9 11V7a3 3 0 0 1 6 0v4"></path></g><g id="lock-shackle"><path d="M9 11V7a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4"></path></g></svg>`;
+
+            const polarizations = [0, 45, 90, 135];
+            for (let i = 0; i < numPhotons; i++) {
+                const photon = document.createElement('div');
+                photon.className = 'photon-dot';
+                photon.style.top = `${10 + Math.random() * 80}%`;
+                photon.dataset.disturbed = 'false';
+                photon.dataset.match = Math.random() > 0.5 ? 'true' : 'false';
+                photon.dataset.polarization = polarizations[Math.floor(Math.random() * 4)];
+                photon.innerHTML = `<div class="photon-state" style="transform: rotate(${photon.dataset.polarization}deg)"></div>`;
+                diagram.appendChild(photon);
+                photons.push(photon);
+            }
+        }
+
+        const stepObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const step = entry.target.dataset.step;
+                    updateDiagram(step);
+                }
+            });
+        }, { threshold: 0.6 });
+
+        steps.forEach(step => stepObserver.observe(step));
+        
+        function updateDiagram(step) {
+            const hacker = document.getElementById('diag-hacker');
+            const lock = document.getElementById('final-key-lock');
+            const publicChannel = document.getElementById('public-channel-line');
+            const diagramWidth = diagram.offsetWidth;
+            lock.style.transform = 'translate(-50%, -50%) scale(0)';
+            lock.style.opacity = '0';
+            lock.classList.remove('locked');
+            publicChannel.style.opacity = 0;
+
+            if (step === '1') {
+                hacker.style.opacity = 0;
+                photons.forEach((p, i) => {
+                    p.style.transform = `translateX(${(diagramWidth * 0.1) + (i * 5)}px) scale(1)`;
+                    p.style.backgroundColor = 'var(--glow-color-cyan)';
+                    p.style.boxShadow = `0 0 8px 2px var(--glow-color-cyan)`;
+                    p.style.opacity = 1;
+                    p.dataset.disturbed = 'false';
+                    p.querySelector('.photon-state').style.transform = `rotate(${p.dataset.polarization}deg)`;
+                });
+            } else if (step === '2') {
+                hacker.style.opacity = 1;
+                photons.forEach((p, i) => {
+                    p.style.transform = `translateX(${diagramWidth * 0.5}px) scale(1)`;
+                    if (i % 4 === 0) {
+                        p.style.backgroundColor = '#f87171';
+                        p.style.boxShadow = `0 0 8px 2px #f87171`;
+                        p.dataset.disturbed = 'true';
+                        p.querySelector('.photon-state').style.transform = `rotate(${Math.random() * 180}deg)`;
+                    }
+                });
+            } else if (step === '3') {
+                hacker.style.opacity = 0;
+                publicChannel.style.opacity = 1;
+                photons.forEach(p => {
+                    p.style.transform = `translateX(${diagramWidth - 80}px) scale(1)`;
+                    if (p.dataset.match === 'false' && p.dataset.disturbed === 'false') {
+                         p.style.backgroundColor = '#64748b'; // slate-500
+                         p.style.boxShadow = 'none';
+                    }
+                });
+            } else if (step === '4') {
+                hacker.style.opacity = 0;
+                let secureCount = 0;
+                let keyAssemblyPromises = [];
+
+                photons.forEach(p => {
+                    const promise = new Promise(resolve => {
+                        setTimeout(() => {
+                            if (p.dataset.disturbed === 'true' || p.dataset.match === 'false') {
+                                p.style.transform = `translateX(${diagramWidth * 0.5}px) translateY(150px) scale(0)`;
+                                p.style.opacity = 0;
+                            } else {
+                                p.style.transform = `translateX(${diagramWidth * 0.5 - 50 + (secureCount * 15)}px) translateY(-40px) scale(1.5) rotate(360deg)`;
+                                p.style.backgroundColor = '#4ade80';
+                                p.style.boxShadow = `0 0 10px 3px #4ade80`;
+                                secureCount++;
+                                playSound("C5");
+                            }
+                            resolve();
+                        }, Math.random() * 500);
+                    });
+                    keyAssemblyPromises.push(promise);
+                });
+
+                Promise.all(keyAssemblyPromises).then(() => {
+                    setTimeout(() => {
+                        lock.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                        lock.style.opacity = '1';
+                        playSound("G5");
+                        setTimeout(() => {
+                            lock.classList.add('locked');
+                            playSound("C4");
+                        }, 500);
+                    }, 800);
+                });
+            }
+        }
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            initAurora();
+        });
+
+        initInteractiveDiagram();
+        updateDiagram('1');
+
+    </script>
+</body>
+</html>

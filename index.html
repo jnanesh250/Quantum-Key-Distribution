@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Quantum Nexus - BB84 Advanced Simulator</title>
+    <!-- Tailwind CSS for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS for specific styles and animations -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Inter font for a modern look -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+    <!-- Google Fonts for quantum symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body class="quantum-bg font-sans overflow-x-hidden">
+    <!-- Animated Background Particles -->
+    <div id="particles-bg" class="particles-container"></div>
+    
+    <!-- Quantum Energy Field Effect -->
+    <div class="quantum-field"></div>
+    
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- Hero Header with Quantum Aesthetics -->
+        <header class="text-center mb-12 relative">
+            <div class="quantum-glow absolute inset-0"></div>
+            <div class="relative z-10">
+                <div class="quantum-logo mb-6">
+                    <div class="quantum-symbol">⚛</div>
+                    <div class="quantum-rings">
+                        <div class="ring ring-1"></div>
+                        <div class="ring ring-2"></div>
+                        <div class="ring ring-3"></div>
+                    </div>
+                </div>
+                <h1 class="quantum-title text-6xl md:text-7xl font-black tracking-tight mb-4">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+                        QUANTUM NEXUS
+                    </span>
+                </h1>
+                <p class="quantum-subtitle text-xl md:text-2xl text-cyan-200 font-light tracking-wide">
+                    Advanced BB84 Quantum Key Distribution Simulator
+                </p>
+                <div class="quantum-status-bar mt-6">
+                    <div class="status-indicator active">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Quantum Core Active</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Quantum Control Panel -->
+        <div class="quantum-control-panel mb-8">
+            <div class="panel-header">
+                <h2 class="panel-title">🌌 Quantum Control Matrix</h2>
+                <div class="panel-decoration"></div>
+            </div>
+            
+            <div class="control-grid">
+                <!-- Alice's Quantum Station -->
+                <div class="quantum-station alice-station">
+                    <div class="station-header">
+                        <div class="station-icon">👩‍🔬</div>
+                        <h3 class="station-title">Alice's Quantum Station</h3>
+                        <div class="station-status active"></div>
+                    </div>
+                    
+                    <div class="control-section">
+                        <h4 class="control-label">Basis Selection Protocol</h4>
+                        <div class="quantum-toggle-group">
+                            <label class="quantum-toggle">
+                                <input type="radio" id="alice-random" name="alice-basis-mode" value="random" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Quantum Random</span>
+                            </label>
+                            <label class="quantum-toggle">
+                                <input type="radio" id="alice-fixed" name="alice-basis-mode" value="fixed">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Fixed Basis</span>
+                            </label>
+                        </div>
+                        
+                        <div class="basis-selector" id="alice-basis-selector">
+                            <select id="alice-fixed-basis" disabled class="quantum-select">
+                                <option value="H/V">H/V (Rectilinear)</option>
+                                <option value="+45/-45">±45° (Diagonal)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eve's Interception Lab -->
+                <div class="quantum-station eve-station">
+                    <div class="station-header">
+                        <div class="station-icon">🕵️‍♀️</div>
+                        <h3 class="station-title">Eve's Interception Lab</h3>
+                        <div class="station-status" id="eve-status"></div>
+                    </div>
+                    
+                    <div class="control-section">
+                        <h4 class="control-label">Interception Protocol</h4>
+                        <label class="quantum-switch">
+                            <input type="checkbox" id="eve-toggle">
+                            <span class="switch-slider"></span>
+                            <span class="switch-label">Activate Eavesdropper</span>
+                        </label>
+                        <div class="interception-warning" id="eve-warning">
+                            ⚠️ Quantum State Collapse Detected
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bob's Reception Station -->
+                <div class="quantum-station bob-station">
+                    <div class="station-header">
+                        <div class="station-icon">👨‍🔬</div>
+                        <h3 class="station-title">Bob's Reception Station</h3>
+                        <div class="station-status active"></div>
+                    </div>
+                    
+                    <div class="control-section">
+                        <h4 class="control-label">Measurement Protocol</h4>
+                        <div class="quantum-toggle-group">
+                            <label class="quantum-toggle">
+                                <input type="radio" id="bob-random" name="bob-basis-mode" value="random" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Quantum Random</span>
+                            </label>
+                            <label class="quantum-toggle">
+                                <input type="radio" id="bob-fixed" name="bob-basis-mode" value="fixed">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Fixed Basis</span>
+                            </label>
+                        </div>
+                        
+                        <div class="basis-selector" id="bob-basis-selector">
+                            <select id="bob-fixed-basis" disabled class="quantum-select">
+                                <option value="H/V">H/V (Rectilinear)</option>
+                                <option value="+45/-45">±45° (Diagonal)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quantum Action Matrix -->
+        <div class="quantum-action-matrix mb-8">
+            <div class="action-header">
+                <h2 class="action-title">🚀 Quantum Action Matrix</h2>
+                <div class="action-decoration"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="single-photon-btn" class="quantum-btn primary">
+                    <span class="btn-icon">⚛</span>
+                    <span class="btn-text">Send Single Photon</span>
+                    <div class="btn-glow"></div>
+                </button>
+                
+                <button id="continuous-btn" class="quantum-btn success">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Continuous Stream</span>
+                    <div class="btn-glow"></div>
+                </button>
+                
+                <button id="stop-btn" class="quantum-btn danger" style="display: none;">
+                    <span class="btn-icon">⏹</span>
+                    <span class="btn-text">Stop Stream</span>
+                    <div class="btn-glow"></div>
+                </button>
+                
+                <button id="fast-forward-btn" class="quantum-btn warning">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">Quantum Burst (100)</span>
+                    <div class="btn-glow"></div>
+                </button>
+                
+                <button id="reset-btn" class="quantum-btn secondary">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Reset Matrix</span>
+                    <div class="btn-glow"></div>
+                </button>
+
+                <button id="run-ibm-btn" class="quantum-btn primary">
+                    <span class="btn-icon">☁️</span>
+                    <span class="btn-text">Run on IBM Cloud</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quantum Visualization Chamber -->
+        <div class="quantum-visualization-chamber mb-8">
+            <div class="chamber-header">
+                <h2 class="chamber-title">🔮 Quantum Visualization Chamber</h2>
+                <div class="chamber-decoration"></div>
+            </div>
+            
+            <div class="simulation-status" id="simulation-status">
+                <div class="status-display">
+                    <span class="status-icon">⚡</span>
+                    <span class="status-text">Quantum Matrix Ready</span>
+                </div>
+            </div>
+            
+            <div class="quantum-transmission-path">
+                <!-- Alice's Station -->
+                <div class="station-display alice-display">
+                    <div class="station-visual">
+                        <div class="quantum-core alice-core">
+                            <div class="core-glow"></div>
+                            <div class="core-symbol">A</div>
+                        </div>
+                    </div>
+                    <div class="station-info">
+                        <div class="info-label">Basis</div>
+                        <div id="alice-basis-viz" class="basis-display">?</div>
+                        <div class="info-label">Bit Value</div>
+                        <div id="alice-bit" class="bit-display">?</div>
+                    </div>
+                </div>
+
+                <!-- Quantum Transmission Channel -->
+                <div class="transmission-channel">
+                    <div class="channel-path">
+                        <div class="path-line"></div>
+                        <div class="path-particles"></div>
+                    </div>
+                    
+                    <!-- Photon Visualization -->
+                    <div id="photon" class="quantum-photon">
+                        <div class="photon-core"></div>
+                        <div class="photon-rings">
+                            <div class="photon-ring ring-1"></div>
+                            <div class="photon-ring ring-2"></div>
+                            <div class="photon-ring ring-3"></div>
+                        </div>
+                        <div class="photon-label" id="photon-icon">?</div>
+                    </div>
+                    
+                    <!-- Eve's Interception Zone -->
+                    <div id="eves-zone" class="eve-interception-zone">
+                        <div class="zone-core">
+                            <div class="zone-symbol">E</div>
+                            <div class="zone-glow"></div>
+                        </div>
+                        <div class="zone-label">Eve's Lab</div>
+                    </div>
+                </div>
+
+                <!-- Bob's Station -->
+                <div class="station-display bob-display">
+                    <div class="station-visual">
+                        <div class="quantum-core bob-core">
+                            <div class="core-glow"></div>
+                            <div class="core-symbol">B</div>
+                        </div>
+                    </div>
+                    <div class="station-info">
+                        <div class="info-label">Basis</div>
+                        <div id="bob-basis-viz" class="basis-display">?</div>
+                        <div class="info-label">Bit Value</div>
+                        <div id="bob-bit" class="bit-display">?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quantum Data Matrix -->
+        <div class="quantum-data-matrix mb-8">
+            <div class="matrix-header">
+                <h2 class="matrix-title">📊 Quantum Data Matrix</h2>
+                <div class="matrix-decoration"></div>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="quantum-data-table">
+                    <thead>
+                        <tr>
+                            <th>Photon #</th>
+                            <th>Alice's Basis</th>
+                            <th>Alice's Value</th>
+                            <th>Eve's Basis</th>
+                            <th>Eve's Outcome</th>
+                            <th>Bob's Basis</th>
+                            <th>Bob's Outcome</th>
+                            <th>Bases Match?</th>
+                            <th>Key Bit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-table-body">
+                        <!-- Table rows will be inserted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quantum Results Chamber -->
+        <div class="quantum-results-chamber">
+            <div class="results-header">
+                <h2 class="results-title">🎯 Quantum Results Chamber</h2>
+                <div class="results-decoration"></div>
+            </div>
+            
+            <div class="results-grid">
+                <!-- Secret Key Display -->
+                <div class="result-panel key-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">🔐 Secret Quantum Key</h3>
+                        <div class="key-status active"></div>
+                    </div>
+                    
+                    <div class="key-display">
+                        <div class="key-section">
+                            <label class="key-label">Alice's Key:</label>
+                            <div id="sifted-key-alice" class="key-value">--</div>
+                        </div>
+                        <div class="key-section">
+                            <label class="key-label">Bob's Key:</label>
+                            <div id="sifted-key-bob" class="key-value">--</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Error Analysis -->
+                <div class="result-panel error-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">⚠️ Quantum Error Analysis</h3>
+                        <div class="error-status" id="error-status"></div>
+                    </div>
+                    
+                    <div class="error-metrics">
+                        <div class="metric">
+                            <label class="metric-label">Total Photons</label>
+                            <div id="total-photons" class="metric-value">0</div>
+                        </div>
+                        <div class="metric">
+                            <label class="metric-label">Key Bits</label>
+                            <div id="key-bits" class="metric-value">0</div>
+                        </div>
+                        <div class="metric">
+                            <label class="metric-label">Errors</label>
+                            <div id="error-count" class="metric-value error">0</div>
+                        </div>
+                        <div class="metric">
+                            <label class="metric-label">Error Rate</label>
+                            <div id="error-rate" class="metric-value error">0.00%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quantum Loading Overlay -->
+    <div id="quantum-loading" class="quantum-loading-overlay">
+        <div class="loading-content">
+            <div class="quantum-spinner"></div>
+            <div class="loading-text">Initializing Quantum Matrix...</div>
+        </div>
+    </div>
+
+    <!-- IBM Credentials Modal -->
+    <div id="ibm-modal" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-6 w-full max-w-xl mx-4">
+            <h3 class="text-xl font-bold text-cyan-200 mb-4">Run QKD on IBM Quantum</h3>
+            <div class="grid gap-4">
+                <label class="block">
+                    <span class="text-sm text-cyan-100">Backend URL</span>
+                    <input id="ibm-backend-url" type="text" value="http://127.0.0.1:8000" class="w-full mt-1 p-2 rounded bg-black/50 border border-white/20 text-white placeholder-gray-400">
+                </label>
+                <label class="block">
+                    <span class="text-sm text-cyan-100">IBM Quantum Token</span>
+                    <input id="ibm-token" type="password" placeholder="Paste your token" class="w-full mt-1 p-2 rounded bg-black/50 border border-white/20 text-white placeholder-gray-400">
+                </label>
+                <label class="block">
+                    <span class="text-sm text-cyan-100">IBM Instance (CRN)</span>
+                    <input id="ibm-instance" type="text" placeholder="crn:v1:bluemix:public:quantum-computing:..." class="w-full mt-1 p-2 rounded bg-black/50 border border-white/20 text-white placeholder-gray-400">
+                </label>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="block">
+                        <span class="text-sm text-cyan-100">Trials</span>
+                        <input id="ibm-trials" type="number" value="50" min="1" class="w-full mt-1 p-2 rounded bg-black/50 border border-white/20 text-white">
+                    </label>
+                    <label class="block">
+                        <span class="text-sm text-cyan-100">Shots/Job</span>
+                        <input id="ibm-shots" type="number" value="1" min="1" class="w-full mt-1 p-2 rounded bg-black/50 border border-white/20 text-white">
+                    </label>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-2">
+                <button id="ibm-cancel" class="px-4 py-2 rounded bg-gray-600 text-white">Cancel</button>
+                <button id="ibm-start" class="px-4 py-2 rounded bg-blue-600 text-white">Start</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Link to the external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
